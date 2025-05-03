@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% include "header.html" %}
+
+{% block title %}
+Manage Employees Portal
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <div class="p-3 bg-light rounded-3">
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="fs-2">
+                        Manage <b>Employee</b>
+                    </div>
+                    <div>
+                        <!-- Modal trigger button -->
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#mymodal">
+                            Add Employee
+                        </button>
+
+
+
+
+                        <!-- Modal -->
+                        <div id="mymodal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" role="dialog">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+              
+                                <div class="modal-header">
+                                  <h5 class="modal-title">Add Employee</h5>
+                                  
+                                </div>
+              
+                                <div class="modal-body">
+                                  <form action="{{url_for('addcontroller.add_employee')}}" method="POST">
+                                    <div class="form-group">
+                                      <label for="empName">Name:</label>
+                                      <input type="text" class="form-control" id="empName" name="name" placeholder="Enter name" required>
+                                    </div>
+                                    <div class="form-group">
+                                      <label for="empEmail">Email:</label>
+                                      <input type="email" class="form-control" id="empEmail" name="email" placeholder="Enter email" required>
+                                    </div>
+                                    <div class="form-group">
+                                      <label for="empPhone">Phone:</label>
+                                      <input type="number" class="form-control" id="empPhone" name="phone" placeholder="Enter phone number" required>
+                                    </div>
+                                    <div class="text-right my-3">
+                                      <button type="submit" class="btn btn-primary">Add</button>
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                  </form>
+                                </div>
+              
+                              </div>
+                            </div>
+                          </div>
+                         
+                        </div>
+
+                <!-- Modal end here -->
+
+
+                </div>
+
+                <!-- Flash the message -->
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade  show mt-3 mx-2 d-flex justify-content-center align-items-center" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+
+
+
+                <table class="table table-hover mt-4">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Action</th>
+                        </tr>    
+                    </thead>
+                    {% for row in employees%}
+                    <tbody>
+
+                        <tr>
+                            <td>{{row.id}}</td>
+                            <td>{{row.name}}</td>
+                            <td>{{row.email}}</td>
+                            <td>{{row.phone}}</td>
+                            <td>
+                                <a href="/update/{{row.id}}" class="btn btn-warning btn-sm px-3" data-bs-toggle="modal" data-bs-target="#modaledit{{row.id}}">Edit</a>  
+                                <a href="/delete/{{row.id}}" class="btn btn-danger btn-sm mx-3" onclick="return confirm('Are you sure to delete?')">Delete</a>  
+                            </td>
+
+                             <!-- edit moda end here -->
+                            <div id="modaledit{{row.id}}" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                  <div class="modal-content">
+                  
+                                    <div class="modal-header">
+                                      <h5 class="modal-title">Update Employee Details</h5>
+                                      
+                                    </div>
+                  
+                                    <div class="modal-body">
+                                      <form action="{{url_for('updatecontroller.update_employee')}}" method="POST">
+                                        <div class="form-group text-center my-3">
+                                            <div class="alert alert-info" role="alert">
+                                              <strong>Editing Record:</strong> You are editing <span class="text-primary fw-bold">ID #{{ row.id }}</span>
+                                            </div>
+                                          </div>
+                                        <div class="form-group">
+                                          <label for="empName">Name:</label>
+                                          <input type="hidden" name="id" value="{{ row.id }}">
+                                          <input type="text" class="form-control" id="empName" name="name" placeholder="Enter name" value = {{row.name}} required>
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="empEmail">Email:</label>
+                                          <input type="email" class="form-control" id="empEmail" name="email" placeholder="Enter email" value = {{row.email}} required>
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="empPhone">Phone:</label>
+                                          <input type="number" class="form-control" id="empPhone" name="phone" placeholder="Enter phone number" value = {{row.phone}} required>
+                                        </div>
+                                        <div class="text-right my-3">
+                                          <button type="submit" class="btn btn-primary">Update</button>
+                                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                      </form>
+                                    </div>
+                  
+                                  </div>
+                                </div>
+                              </div>
+                             
+                            </div>
+
+                          <!-- edit moda end here -->
+                        </tr>    
+                    </tbody>
+
+                    {% endfor %}
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
